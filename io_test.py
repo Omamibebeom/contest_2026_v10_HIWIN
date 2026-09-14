@@ -4,6 +4,8 @@ io_test.py —— 賽前測試 放置板物件 (a 通道) 顏色 → IO 訊號 (
 畫面顯示: 目前看到的顏色 (只看 IO_CODES 裡的顏色, 取面積最大者)、ready 腳電位、a 通道狀態。
 手臂拉高 ready 時會和比賽一樣自動投票 VOTE_SEC 秒再送出 IO 訊號 (用的就是 main_contest.ChannelA),
 所以 io_test 測過的「ready → 訊號」迴路, 比賽時行為完全相同。
+前提: affine_transform.py 的作答區 1 (PIXELS/ARMS) 要先填好, 否則本程式一啟動就 LinAlgError (見下面 import 的註解)。
+按鍵手動送訊號和 ready 自動送訊號共用同一組繼電器, 兩次送訊號之間請間隔 8 秒以上 (見 pi_gpio_controller.py)。
 鍵位:
   1~9   送出 IO_CODES 裡第 1~9 個顏色的訊號 (不看相機, 純測接線)
   f     送出失敗碼
@@ -20,6 +22,8 @@ import camera_config as cam
 from color_detect import load_profiles, detect_with_profiles
 from pi_gpio_controller import PiGPIOController, IO_CODES, FAIL_CODE
 from main_contest import ChannelA     # 沿用比賽的 ready → 投票 → 送 IO 狀態機 (import 不會開相機或 socket)
+                                      # 注意: 這行會連帶載入 affine_transform, 作答區 1 (PIXELS/ARMS) 還沒填好時
+                                      #       本程式會在這裡以 LinAlgError 中止 —— 先做完 affine 再跑 io_test。
 
 PROFILES_FILE = "vision_profiles.json"
 

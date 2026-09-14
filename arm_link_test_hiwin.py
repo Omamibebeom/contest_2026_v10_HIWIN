@@ -1,5 +1,5 @@
 """
-arm_link_test.py —— 只測「手臂 ↔ 樹莓派」的通訊 (上銀 HIWIN 版, 廠商測機用)
+arm_link_test_hiwin.py —— 只測「手臂 ↔ 樹莓派」的通訊 (上銀 HIWIN 版, 廠商測機用)
 
 跟比賽主程式的差別
   不開相機、不讀 vision_profiles.json、不碰 GPIO、不做座標轉換。
@@ -15,7 +15,7 @@ arm_link_test.py —— 只測「手臂 ↔ 樹莓派」的通訊 (上銀 HIWIN 
   其他       → {1,1}
 
 執行
-  python3 arm_link_test.py
+  python3 arm_link_test_hiwin.py
 
 賽前手臂端要先確認的三件事
   1. hiwin_flow_v1.hrb 的 COPEN 那一行是 192.168.1.10 : 5000

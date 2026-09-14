@@ -29,7 +29,7 @@ cd ~/Desktop/contest_2026_v10_HIWIN
 
 **手臂端（上銀教導器）要做的三件事**：① `docs/hiwin_flow_v1.hrb` 放進控制器，裡面 `COPEN(ETH, 192,168,1,10, 5000)` 那一行的 IP 改成樹莓派實際 IP；② `Start-up → Network Config` 確認 `{` `}` `,` 且 `Non Format` 未勾；③ 主程式照 `docs/a_channel_flow.txt` 寫（a 件用 `$DO[1]`/`$DI[1..4]` 握手，b 件呼叫 `hiwin_flow_v1()`）。
 
-作答區 1 還沒填完（只有 1 個點）時，`python3 affine_transform.py` 和主程式都會噴 `LinAlgError: Singular matrix`——這是正常的，代表還沒作答。
+作答區 1 還沒填完（只有 1 個點）時，`python3 affine_transform.py`、主程式和 `io_test.py` 都會噴 `LinAlgError: Singular matrix`——這是正常的，代表還沒作答（`io_test.py` 借用主程式的 a 通道狀態機，所以也會連帶載入作答區 1）。
 
 ---
 
@@ -93,14 +93,14 @@ python3 main_contest.py --practice
 
 | 最後一行 | 原因 | 怎麼辦 |
 |---|---|---|
-| `LinAlgError: Singular matrix` | 作答區 1 點太少或排成一直線；或作答區 2 寫錯 | 重取點位／檢查公式 |
+| `LinAlgError: Singular matrix`（主程式或 io_test.py） | 作答區 1 點太少或排成一直線；或作答區 2 寫錯 | 重取點位／檢查公式；io_test.py 要等作答區 1 填好才能跑 |
 | `ValueError: matmul ... mismatch` | PIXELS 和 ARMS 點數不一樣 | 兩份清單數一數 |
 | `[camera] 試過 [0..5] 都讀不到畫面` | 相機沒插好，或被別的程式佔住 | 插好；關掉還開著的 tuner／sample tool |
 | `[camera] 注意: 不是 1280x720` | 相機解析度不對，點位會全錯 | 換回同一台相機再啟動 |
 | `找不到 vision_profiles.json` | 還沒存顏色 | 做第 1 步 |
 | `[b] 注意: PICK_ORDER 有 'xxx'，但快照裡沒有` | 顏色名寫錯，或快照時物件被擋住 | 對名字；手臂移出畫面按 `r` 重拍（練習模式） |
 | 手臂教導器印 `NO TARGET`（收到 `{0,0}`） | 該顏色已經給完，或 PICK_ORDER 用完 | 正式比賽這是正常結束；練習用 `--practice` |
-| 手臂教導器印 `Socket Open Error` | 手臂按太早（程式還沒到階段二），或樹莓派有線 IP 不是 192.168.1.10 | 等「階段二」再按；`ip -4 addr show eth0` 確認 IP |
+| 手臂教導器印 `Socket Open Error` | 手臂按太早（程式還沒到階段二），或樹莓派有線 IP 不是 192.168.1.10，或 Wi-Fi 也拿到 192.168.1.x（兩張網卡同網段會互搶） | 等「階段二」再按；`ip -4 addr show` 確認有線是 .10 且 Wi-Fi 不在 192.168.1.x |
 | 手臂教導器印 `GET TIMEOUT: NO REPLY` | 封包符號對不上 | 教導器 `Network Config` 確認 `{` `}` `,`、`Non Format` 未勾 |
 
 ---

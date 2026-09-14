@@ -10,7 +10,7 @@ main_contest.py —— 比賽主程式 (跑在樹莓派)
 賽前準備 (照順序):
   1. vision_tuner.py        調每個顏色的 HSV, 存進 vision_profiles.json
   2. affine_sample_tool.py  取像素↔手臂點位, 抄進 affine_transform.py
-  3. io_test.py             確認 顏色 → IO 訊號 的接線
+  3. io_test.py             確認 顏色 → IO 訊號 的接線 (它會載入本程式, 所以第 2 步要先做完)
   4. 填好下面的 PICK_ORDER (pi_gpio_controller.py 的 IO_CODES 也要填)
 
 執行:
