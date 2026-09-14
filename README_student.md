@@ -11,7 +11,7 @@ cd ~/Desktop/contest_2026_v10_HIWIN
 
 | 通道 | 物件在哪塊板 | 手臂做什麼 | 程式做什麼 | 程式回什麼 |
 |---|---|---|---|---|
-| a | 放置板（位置固定，題目指定夾哪件） | 夾起物件，舉到鏡頭與光電感測器前停 1 秒 | 辨識舉在鏡頭前的物件是什麼顏色 | IO 訊號（`IO_CODES` 那張表） |
+| a | 放置板（位置固定，題目指定夾哪件） | 夾起物件，舉到鏡頭與光電感測器前，拉高 ready 後停住等 IO 訊號回來（投票 3 秒，訊號約第 4 秒才到） | 辨識舉在鏡頭前的物件是什麼顏色 | IO 訊號（`IO_CODES` 那張表） |
 | b | 隨機位置放置板（每次位置不同） | 呼叫 `hiwin_flow_v1()` 送 GET 問座標，照回覆去夾 | 開場拍快照，算出每件的手臂座標 | `{x,y}`（mm × 1000 的整數；照 `PICK_ORDER` 的顏色順序，不回顏色） |
 
 ---
@@ -27,7 +27,7 @@ cd ~/Desktop/contest_2026_v10_HIWIN
 
 顏色名有一條鐵則：**vision_profiles.json、PICK_ORDER、IO_CODES 三個地方的名字要一模一樣、全部小寫**。
 
-**手臂端（上銀教導器）要做的三件事**：① `docs/hiwin_flow_v1.hrb` 放進控制器，裡面 `COPEN(ETH, 192,168,1,10, 5000)` 那一行的 IP 改成樹莓派實際 IP；② `Start-up → Network Config` 確認 `{` `}` `,` 且 `Non Format` 未勾；③ 主程式照 `docs/a_channel_flow.txt` 寫（a 件用 `$DO[1]`/`$DI[1..4]` 握手，b 件呼叫 `hiwin_flow_v1()`）。
+**手臂端（上銀教導器）要做的三件事**：① `docs/hiwin_flow_v1.hrb` 放進控制器，裡面 `COPEN(ETH, 192,168,1,10, 5000)` 那一行的 IP 改成樹莓派實際 IP；② `Start-up → Network Config → Change IP` 那一頁確認 `{` `}` `,` 且 `Non Format` 未勾（同一組下拉選單在 Network Config 主頁也有）；③ 主程式照 `docs/a_channel_flow.txt` 寫（a 件用 `$DO[1]`/`$DI[1..4]` 握手，b 件呼叫 `hiwin_flow_v1()`）。
 
 作答區 1 還沒填完（只有 1 個點）時，`python3 affine_transform.py`、主程式和 `io_test.py` 都會噴 `LinAlgError: Singular matrix`——這是正常的，代表還沒作答（`io_test.py` 借用主程式的 a 通道狀態機，所以也會連帶載入作答區 1）。
 
@@ -59,7 +59,7 @@ python3 affine_transform.py
 ```
 python3 io_test.py
 ```
-按 `1`～`9` 送出 IO_CODES 裡第 1～9 個顏色的訊號，手臂端看 DI 讀到的碼對不對；`f` 送失敗碼；`0` 全關；`r` 把鏡頭現在看到的顏色送出去（和比賽動作一樣）。
+按 `1`～`9` 送出 IO_CODES 裡第 1～9 個顏色的訊號，手臂端看 DI 讀到的碼對不對；`f` 送失敗碼；`0` 全關；`r` 把鏡頭現在看到的顏色立刻送出去（不投票）。要測「和比賽一樣」的流程，直接讓手臂拉高 ready，io_test 會自動投票 3 秒再送。
 
 **第 6 步：練習跑一次**
 ```
@@ -81,7 +81,7 @@ python3 main_contest.py --practice
    [camera] index 0 開啟, 解析度 1280x720
    [b] 快照完成, 共 3 件:        ← 件數和顏色要對
        #0 red ...
-   [main] === 階段二: 可以按手臂了 ===
+   [main] === 階段二: 可以按手臂了 (0.0.0.0:5000) ===
    ```
    **看到「階段二」那行才按手臂。** 太早按，手臂端會顯示連線失敗。
 4. 比賽中不要碰程式。手臂每呼叫一次 `hiwin_flow_v1()`（送 GET），終端會印一行「[b] 給 red → 手臂(…)」（隨機板）；每次舉物件到鏡頭前會印「[a] 判定 … → 送 IO」（放置板）。

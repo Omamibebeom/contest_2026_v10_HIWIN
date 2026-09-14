@@ -9,13 +9,13 @@ arm_link.py —— 和機械手臂講話的模組 (換手臂只改這一支)
   其他句子: SCAN / GRIP / RELEASE / RESET / QUIT (主程式決定回什麼)
 
 上銀的封包【沒有換行】, 靠起始符號 { 和結尾符號 } 界定, 欄位用 , 分隔。
-這三個符號是 HIWIN Robot Software Manual 3.3 第 6.10.2 節 (p.258) 的預設值,
+這三個符號是 HIWIN Robot Software Manual 3.3 第 6.10.2 節步驟 4 (p.257) 的預設值,
 在教導器 Start-up → Network Config 可以改; 改了就要同步改下面的 HEAD / TAIL / SEP。
 """
 import socket
 
 HOST, PORT = "0.0.0.0", 5000     # 樹莓派在這個埠等手臂來連 ("0.0.0.0" = 任何網路卡都可)
-HEAD, TAIL, SEP = "{", "}", ","  # 封包起始 / 結尾 / 分隔符號 (手冊 6.10.2 p.258 預設值)
+HEAD, TAIL, SEP = "{", "}", ","  # 封包起始 / 結尾 / 分隔符號 (手冊 6.10.2 步驟 4 p.257 預設值)
 SCALE = 1000                     # 座標 mm × SCALE 後取整數送出; 手臂端 script 的 SCALE 要一樣
 MAX_BUF = 1024                   # 收了這麼多 bytes 還沒看到結尾符號 → 當垃圾丟掉, 避免緩衝無限長大
 
