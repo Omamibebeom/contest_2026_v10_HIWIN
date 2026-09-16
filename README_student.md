@@ -29,7 +29,7 @@ cd ~/Desktop/contest_2026_v10_HIWIN
 
 **手臂端（上銀教導器）要做的三件事**：① `docs/hiwin_flow_v1.hrb` 放進控制器，裡面 `COPEN(ETH, 192,168,1,10, 5000)` 那一行的 IP 改成樹莓派實際 IP；② `Start-up → Network Config → Change IP` 那一頁確認 `{` `}` `,` 且 `Non Format` 未勾（同一組下拉選單在 Network Config 主頁也有）；③ 主程式照 `docs/a_channel_flow.txt` 寫（a 件用 `$DO[1]`/`$DI[1..4]` 握手，b 件呼叫 `hiwin_flow_v1()`）。
 
-作答區 1 還沒填完（只有 1 個點）時，`python3 affine_transform.py`、主程式和 `io_test.py` 都會噴 `LinAlgError: Singular matrix`——這是正常的，代表還沒作答（`io_test.py` 借用主程式的 a 通道狀態機，所以也會連帶載入作答區 1）。
+作答區 1 還沒填完（只有 1 個點）時，`python3 affine_transform.py` 和主程式都會噴 `LinAlgError: Singular matrix`——這是正常的，代表還沒作答。`io_test.py` 借用主程式的 a 通道狀態機，這時會印 `[io] 載入 main_contest 失敗` 並把自動投票暫時關掉（畫面顯示 `[auto-off]`），按鍵測 IO 照常可用；作答區 1 填好後重跑就恢復。
 
 ---
 
@@ -93,7 +93,8 @@ python3 main_contest.py --practice
 
 | 最後一行 | 原因 | 怎麼辦 |
 |---|---|---|
-| `LinAlgError: Singular matrix`（主程式或 io_test.py） | 作答區 1 點太少或排成一直線；或作答區 2 寫錯 | 重取點位／檢查公式；io_test.py 要等作答區 1 填好才能跑 |
+| `LinAlgError: Singular matrix` | 作答區 1 點太少或排成一直線；或作答區 2 寫錯 | 重取點位／檢查公式 |
+| `io_test.py` 印 `[io] 載入 main_contest 失敗`，畫面 `[auto-off]` | 作答區 1 還沒抄或抄錯，io_test 借用主程式的投票功能時被擋下 | 和接線無關；按鍵測 IO 照常，作答區 1 修好後重跑就恢復自動投票 |
 | `ValueError: matmul ... mismatch` | PIXELS 和 ARMS 點數不一樣 | 兩份清單數一數 |
 | `[camera] 試過 [0..5] 都讀不到畫面` | 相機沒插好，或被別的程式佔住 | 插好；關掉還開著的 tuner／sample tool |
 | `[camera] 注意: 不是 1280x720` | 相機解析度不對，點位會全錯 | 換回同一台相機再啟動 |
